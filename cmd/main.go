@@ -19,8 +19,9 @@ func main() {
 
 	e := echo.New()
 	userService := service.NewUserService(config.DB)
+	routes.SetupRouteServiceRoutes(e, routeService)
 
-	routes.SetupRoutes(e, userService)
+	routes.SetupUserRoutes(e, userService)
 
 	e.Logger.Fatal(e.Start(":8080"))
 
