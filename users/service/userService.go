@@ -24,7 +24,6 @@ func (s *UserService) AddUser(req *model.CreateUserRequest) (*model.CreateUserRe
 		return nil, errors.New("나이는 0보다 커야 합니다.")
 	}
 
-	// 회원정보를 DB에 저장
 	user := model.User{
 		Name: req.Name,
 		Age:  req.Age,
@@ -34,7 +33,6 @@ func (s *UserService) AddUser(req *model.CreateUserRequest) (*model.CreateUserRe
 		return nil, err
 	}
 
-	// 성공 메시지와 함께 응답 생성
 	resp := &model.CreateUserResponse{
 		Name:    user.Name,
 		Age:     user.Age,
