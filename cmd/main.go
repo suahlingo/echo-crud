@@ -2,8 +2,8 @@ package main
 
 import (
 	"awesomeProject/config"
+	"awesomeProject/models"
 	"awesomeProject/routes"
-	"awesomeProject/users/model"
 	"awesomeProject/users/service"
 	"github.com/labstack/echo/v4"
 	"time"
@@ -13,7 +13,7 @@ func main() {
 	time.Sleep(10 * time.Second)
 	config.LoadConfig()
 
-	if err := model.Migrate(config.DB); err != nil {
+	if err := models.Migrate(config.DB); err != nil {
 		panic("failed to migrate database: " + err.Error())
 	}
 
