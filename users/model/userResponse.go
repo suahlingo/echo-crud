@@ -1,10 +1,8 @@
 package model
 
-import "gorm.io/gorm"
-
-func Migrate(db *gorm.DB) error {
-	return db.AutoMigrate(&User{})
-}
+//func Migrate(db *gorm.DB) error {
+//	return db.AutoMigrate(&User{})
+//}
 
 type User struct {
 	ID   int    `gorm:"primaryKey;autoIncrement" json:"id"`
