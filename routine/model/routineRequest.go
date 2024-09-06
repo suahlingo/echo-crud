@@ -1,5 +1,5 @@
 package model
 
 type RefreshRequest struct {
-	IsRefreshed bool `json:"isRefresh"`
+	IsRefreshed bool `json:"isRefreshed"`
 }

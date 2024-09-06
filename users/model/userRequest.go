@@ -1,13 +1,5 @@
 package model
 
-type RegisterRequest struct {
-	Email            string `json:"email"`
-	Password         string `json:"password"`
-	Name             string `json:"name"`
-	Age              int    `json:"age"`
-	HasAcceptedTerms bool   `json:"has_terms"`
-}
-
 type CreateUserRequest struct {
 	Name string `gorm:"name"`
 	Age  int    `gorm:"default:0"`

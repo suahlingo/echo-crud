@@ -1,10 +1,11 @@
 package routes
 
 import (
+	controller2 "awesomeProject/routine/controller"
+	service2 "awesomeProject/routine/service"
 	"awesomeProject/users/controller"
 	"awesomeProject/users/service"
 	"github.com/labstack/echo/v4"
-	"net/http"
 )
 
 func SetupUserRoutes(e *echo.Echo, Userservice *service.UserService) {
@@ -18,15 +19,9 @@ func SetupUserRoutes(e *echo.Echo, Userservice *service.UserService) {
 	e.DELETE("/users/deleteUser", userController.DeleteUser)
 }
 
-func SetupRouteServiceRoutes(e *echo.Echo, routeService *service.RouteService) {
-	e.POST("/for", func(c echo.Context) error {
-		var req service.RefreshRequest
-		if err := c.Bind(&req); err != nil {
-			return c.JSON(http.StatusBadRequest, "Invalid request")
-		}
+func SetupRoutineRoutes(e *echo.Echo, RoutineService *service2.RoutineService) {
 
-		// 랜덤 값을 반환하는 서비스 호출
-		resp := routeService.GetRandomValue(req)
-		return c.JSON(http.StatusOK, resp)
-	})
+	routineController := controller2.NewRoutineController(RoutineService)
+
+	e.GET("/routine/data", routineController.GetDataList)
 }
