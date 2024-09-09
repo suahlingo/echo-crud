@@ -4,10 +4,12 @@ import (
 	"awesomeProject/routine/service"
 	"github.com/labstack/echo/v4"
 	"net/http"
+	"sync"
 )
 
 type routineController struct {
 	RoutineService *service.RoutineService
+	mutex          sync.Mutex
 }
 
 func NewRoutineController(routineService *service.RoutineService) *routineController {
@@ -18,7 +20,7 @@ func (r *routineController) GetDataList(c echo.Context) error {
 	var randomData []int
 
 	for len(randomData) < 20 {
-		newData, err := r.RoutineService.FetchData() // 서비스 메서드 호출
+		newData, err := r.RoutineService.FetchData()
 		if err != nil {
 			return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Failed to fetch data"})
 		}
@@ -30,38 +32,36 @@ func (r *routineController) GetDataList(c echo.Context) error {
 	return c.JSON(http.StatusOK, randomData)
 }
 
-//type routineController struct {
-//	RoutineService service.RoutineService
-//}
-//
-//func NewRoutineController(routineService *service.Routin) *routineController {
-//	return &routineController{RoutineService: *routineService}
-//}
+func (r *routineController) GoRoutine(c echo.Context) error {
+	r.mutex.Lock()
+	defer r.mutex.Unlock()
 
-//func (rc *routineController) RandRefresh(c echo.Context) error {
-//	// 쿼리 파라미터로 'isRefreshed' 값을 받음
-//	isRefreshed := c.QueryParam("isRefreshed")
-//
-//	if isRefreshed == "true" {
-//		resp := service.GetRandomValue(true, &rc.RoutineService.RefreshArr)
-//		if resp != nil {
-//			return c.JSON(http.StatusOK, resp)
-//		}
-//	}
-//
-//	return c.JSON(http.StatusBadRequest, "새로고침되지 않음")
-//}
+	//var results []int
+	//var wg sync.WaitGroup
+	//var mu sync.Mutex
 
-//func (rc *routineController) RandRefresh(c echo.Context) error {
-//	var req model.RefreshRequest
-//	if err := c.Bind(&req); err != nil {
-//		return c.JSON(http.StatusBadRequest, "잘못된 요청")
-//	}
-//
-//	resp := service.GetRandomValue(req, &rc.RoutineService.RefreshArr)
-//	if resp != nil {
-//		return c.JSON(http.StatusOK, resp)
-//	}
-//
-//	return c.JSON(http.StatusBadRequest, "새로고침되지 않음")
-//}
+	var (
+		results []int
+		wg      sync.WaitGroup
+		mu      sync.Mutex
+	)
+
+	wg.Add(20) //20개
+
+	for i := 0; i < 20; i++ {
+		go func() {
+			defer wg.Done()
+			newData, err := r.RoutineService.FetchData()
+			if err != nil {
+				c.JSON(http.StatusInternalServerError, map[string]string{"error": "Failed to fetch data"})
+				return
+			}
+			mu.Lock()
+			results = append(results, newData)
+			mu.Unlock()
+		}()
+	}
+
+	wg.Wait()
+	return c.JSON(http.StatusOK, results)
+}
