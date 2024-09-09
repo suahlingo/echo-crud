@@ -1,10 +1,10 @@
 package service
 
 import (
+	"encoding/json"
 	"io"
+	"log"
 	"net/http"
-	"strconv"
-	"strings"
 )
 
 type RoutineService struct {
@@ -20,6 +20,7 @@ func NewRoutineService(baseURL string) *RoutineService {
 func (s *RoutineService) FetchData() (int, error) {
 	resp, err := http.Get(s.BaseURL)
 	if err != nil {
+		log.Printf("Error fetching data from %s: %v", s.BaseURL, err)
 		return 0, err
 	}
 	defer resp.Body.Close()
@@ -30,8 +31,14 @@ func (s *RoutineService) FetchData() (int, error) {
 	}
 
 	// 문자열 -> 숫자로 변환
-	dataStr := strings.TrimSpace(string(body))
-	number, err := strconv.Atoi(dataStr)
+	//dataStr := strings.TrimSpace(string(body))
+	//number, err := strconv.Atoi(dataStr)
+	//if err != nil {
+	//	return 0, err
+	//}
+
+	var number int
+	err = json.Unmarshal(body, &number)
 	if err != nil {
 		return 0, err
 	}

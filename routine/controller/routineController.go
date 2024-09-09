@@ -36,10 +36,6 @@ func (r *routineController) GoRoutine(c echo.Context) error {
 	r.mutex.Lock()
 	defer r.mutex.Unlock()
 
-	//var results []int
-	//var wg sync.WaitGroup
-	//var mu sync.Mutex
-
 	var (
 		results []int
 		wg      sync.WaitGroup

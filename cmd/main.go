@@ -21,8 +21,8 @@ func main() {
 	e := echo.New()
 
 	userService := service.NewUserService(config.DB)
-	routineService := service2.NewRoutineService("https://www.random.org/integers/?num=1&min=1&max=20&col=1&base=10&format=plain&rnd=new")
-
+	routineService := service2.NewRoutineService("http://host.docker.internal:9999/random")
+	//routineService := service2.NewRoutineService("https://www.randomnumberapi.com/api/v1.0/random?min=100&max=1000&count=1")
 	routes.SetupUserRoutes(e, userService)
 	routes.SetupRoutineRoutes(e, routineService)
 
