@@ -23,5 +23,6 @@ func SetupRoutineRoutes(e *echo.Echo, RoutineService *service2.RoutineService) {
 
 	routineController := controller2.NewRoutineController(RoutineService)
 
-	e.GET("/routine/data", routineController.GetDataList)
+	e.GET("/routine/for", routineController.GetDataList)
+	e.GET("/routine/goRoutine", routineController.GoRoutine)
 }
